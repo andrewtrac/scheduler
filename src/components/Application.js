@@ -1,72 +1,41 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import DayList from "components/DayList";
 import Appointment from 'components/Appointment';
+import getAppointmentsForDay  from "helpers/selectors";
+import axios from 'axios';
 import "components/DayListItem.scss";
 import "components/Application.scss";
-
-const appointments = [
-  {
-    id: 1,
-    time: "12pm",
-  },
-  {
-    id: 2,
-    time: "1pm",
-    interview: {
-      student: "Lydia Miller-Jones",
-      interviewer: {
-        id: 1,
-        name: "Sylvia Palmer",
-        avatar: "https://i.imgur.com/LpaY82x.png",
-      }
-    }
-  },
-  {
-   id: 3,
-   time: "2pm",
-  },
-  {
-   id: 4,
-   time: "3pm",
-   interview: {
-     student: "Edward McLovin",
-     interviewer: {
-       id: 1,
-       name: "Sylvia Palmer",
-       avatar: "https://i.imgur.com/LpaY82x.png",
-     }
-   }
-  }
-  ,
-  {
-   id: 5,
-   time: "4pm",
-  }
-
-];
 
 
 export default function Application(props) {
 
-  const days = [
-    {
-      id: 1,
-      name: "Monday",
-      spots: 2,
-    },
-    {
-      id: 2,
-      name: "Tuesday",
-      spots: 5,
-    },
-    {
-      id: 3,
-      name: "Wednesday",
-      spots: 0,
-    },
-  ];
 
-  let [day, setDay] = useState('Monday')
+const [state, setState] = useState({
+  day: "Monday",
+  days: [],
+  appointments: {}
+});
+
+useEffect(() => {
+  setAppointments(getAppointmentsForDay(state , state.day))
+}, [state.day])
+
+const setDay = day => setState(prev => ({ ...prev, day }));
+
+
+
+Promise.all([
+  axios.get('http://localhost:8001/api/days').then((response) => {
+    return response.data
+  }),
+  axios.get('http://localhost:8001/api/appointments').then((response) => {
+     return response.data
+  }),
+]).then((all) => {
+  setState(prev => ({ ...prev, days: all[0], appointments: all[1] }));
+})
+
+const [dayAppointments, setAppointments] = useState(getAppointmentsForDay(state , 'Monday'))
 
 
   return (
@@ -80,9 +49,9 @@ export default function Application(props) {
       <hr className="sidebar__separator sidebar--centered" />
       <nav className="sidebar__menu">
         <DayList
-          days={days}
-          day={day}
-          setDay={setDay}
+          days={state.days} 
+          day={state.day}
+          setDay={setDay} 
           />
         </nav>
       <img
@@ -92,7 +61,7 @@ export default function Application(props) {
       />
       </section>
       <section className="schedule">
-        {appointments.map((element) => {
+        { dayAppointments.map((element) => {
           return (
           <Appointment 
           key={element.id}
