@@ -36,17 +36,57 @@ Promise.all([
 const [dayAppointments, setAppointments] = useState(getAppointmentsForDay(state , 'Monday'))
 const [dayInterviewers, setInterviewers] = useState([])
 
+
 useEffect(() => {
   setInterviewers(getInterviewersForDay(state , state.day))
-}, [state.day])
+}, [state])
 
 useEffect(() => {
   setAppointments(getAppointmentsForDay(state , state.day))
-}, [state.day])
+}, [state])
 
 const setDay = day => setState(prev => ({ ...prev, day }));
 
 
+function bookInterview(id, interview) {
+  const appointment = {
+    ...state.appointments[id],
+    interview: { ...interview }
+  };
+  const appointments = {
+    ...state.appointments,
+    [id]: appointment
+  };
+  return axios.put(`http://localhost:8001/api/appointments/${id}`, {interview: interview}).then((response) => {
+    setState(state => ({
+      ...state,
+      appointments
+    })) 
+  return response })
+}
+
+
+
+function cancelInterview(id) { 
+
+  const appointment = {
+    ...state.appointments[id],
+    interview: null
+  };
+
+  console.log(appointment)
+
+  const appointments = {
+    ...state.appointments,
+    [id]: appointment
+  };
+
+  return axios.delete(`http://localhost:8001/api/appointments/${id}`, {interview: null}).then((response) => {
+    setState(state => ({
+      ...state,
+      appointments
+    }))})
+} 
 
 
   return (
@@ -84,6 +124,8 @@ const setDay = day => setState(prev => ({ ...prev, day }));
           time={element.time}
           interview={interview}
           interviewers={dayInterviewers}
+          bookInterview={bookInterview}
+          cancelInterview={cancelInterview}
           />
           )
         })}
