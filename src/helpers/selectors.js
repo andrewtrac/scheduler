@@ -81,13 +81,28 @@ function getInterview (state, interview) {
   return interview
 }
 
+function getInterviewersForDay (state, day) {
+
+  let dayInterviewers;
+  let interviewersOutput = []
+
+  for (let dayKey of state.days) {
+      if (dayKey.name === day) {
+      dayInterviewers = dayKey.interviewers
+    }
+  }
+  for(let interviewerID in state.interviewers) {
+      if (dayInterviewers && dayInterviewers.includes(Number(interviewerID))) {
+         interviewersOutput.push(state.interviewers[interviewerID])
+      } 
+  }
+  return interviewersOutput
+}
 
 
 
-  
 
-
-export { getAppointmentsForDay , getInterview }
+export { getAppointmentsForDay , getInterview, getInterviewersForDay }
 
 
 
