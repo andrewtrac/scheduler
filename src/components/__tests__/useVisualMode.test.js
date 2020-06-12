@@ -6,6 +6,7 @@ import TestRenderer from 'react-test-renderer';
 const FIRST = "FIRST";
 const SECOND = "SECOND";
 const THIRD = "THIRD";
+const FOURTH = "FOURTH";
 
 test("useVisualMode should initialize with default value", () => {
   const { result } = renderHook(() => useVisualMode(FIRST));
@@ -54,4 +55,20 @@ test("useVisualMode should transition to another mode", () => {
   
     act(() => result.current.back());
     expect(result.current.mode).toBe(FIRST);
+  });
+
+  test("useVisualMode should replace the current mode (part 2 using FOURTH)", () => {
+    const { result } = renderHook(() => useVisualMode(FIRST));
+  
+    act(() => result.current.transition(SECOND));
+    expect(result.current.mode).toBe(SECOND);
+  
+    act(() => result.current.transition(THIRD, false));
+    expect(result.current.mode).toBe(THIRD);
+
+    act(() => result.current.transition(FOURTH, true));
+    expect(result.current.mode).toBe(FOURTH)
+  
+    act(() => result.current.back());
+    expect(result.current.mode).toBe(SECOND);
   });
