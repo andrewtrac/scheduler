@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import DayList from "components/DayList";
 import Appointment from 'components/Appointment';
-import { getAppointmentsForDay, getInterview } from "helpers/selectors";
+import { getAppointmentsForDay, getInterview, getInterviewersForDay } from "helpers/selectors";
 import axios from 'axios';
 import "components/DayListItem.scss";
 import "components/Application.scss";
@@ -16,12 +16,6 @@ const [state, setState] = useState({
   appointments: {},
   interviewers: {}
 });
-
-useEffect(() => {
-  setAppointments(getAppointmentsForDay(state , state.day))
-}, [state.day])
-
-const setDay = day => setState(prev => ({ ...prev, day }));
 
 
 
@@ -40,6 +34,19 @@ Promise.all([
 })
 
 const [dayAppointments, setAppointments] = useState(getAppointmentsForDay(state , 'Monday'))
+const [dayInterviewers, setInterviewers] = useState([])
+
+useEffect(() => {
+  setInterviewers(getInterviewersForDay(state , state.day))
+}, [state.day])
+
+useEffect(() => {
+  setAppointments(getAppointmentsForDay(state , state.day))
+}, [state.day])
+
+const setDay = day => setState(prev => ({ ...prev, day }));
+
+
 
 
   return (
@@ -65,6 +72,7 @@ const [dayAppointments, setAppointments] = useState(getAppointmentsForDay(state 
       />
       </section>
       <section className="schedule">
+
         { dayAppointments.map((element) => {
 
           const interview = getInterview(state, element.interview);
@@ -75,6 +83,7 @@ const [dayAppointments, setAppointments] = useState(getAppointmentsForDay(state 
           id={element.id}
           time={element.time}
           interview={interview}
+          interviewers={dayInterviewers}
           />
           )
         })}
@@ -83,6 +92,3 @@ const [dayAppointments, setAppointments] = useState(getAppointmentsForDay(state 
     </main>
   );
 }
-
-
-
