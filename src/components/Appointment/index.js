@@ -29,8 +29,8 @@ export default function Appointment (props) {
     };
     transition(SAVING)
     props.bookInterview(props.id, interview)
-    .then(() =>
-    transition(SHOW))
+    .then(() => {
+    transition(SHOW)})
     .catch((error) => {
     transition(ERROR_SAVE, true)
     })
@@ -46,29 +46,19 @@ export default function Appointment (props) {
     })
   }
 
-  
-  
-
     const { mode, transition, back } = useVisualMode(
         props.interview ? SHOW : EMPTY
       );
 
     return (
-    <article className="appointment">
+    <article className="appointment" data-testid="appointment">
         <Header 
-           time={props.time}/>
+        time={props.time}/>
         {mode === EMPTY && <Empty onAdd={() => {transition(CREATE)}}/>}
 
         {mode === SAVING && <Status text={'Saving'}/>}
         {mode === DELETING && <Status text={'Deleting'}/>}
         
-        {mode === SHOW && 
-          (<Show
-           student={props.interview.student}
-           interviewer={props.interview.interviewer.name}
-           onDelete={() => {transition(CONFIRM)}} 
-           onEdit={() => {transition(EDIT)}} 
-        />)}
         {mode === CONFIRM && <Confirm onCancel={() => {back()}} onConfirm={() => {deleteInterview()}} />}
         {mode === CREATE && 
           < Form
@@ -97,6 +87,13 @@ export default function Appointment (props) {
           onClose={() => {back()}}
           />
           }
+          {mode === SHOW && 
+          (<Show
+           student={props.interview && props.interview.student}
+           interviewer={props.interview && props.interview.interviewer}
+           onDelete={() => {transition(CONFIRM)}} 
+           onEdit={() => {transition(EDIT)}} 
+        />)}
     </article>
     )
 }
