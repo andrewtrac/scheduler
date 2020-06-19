@@ -11,11 +11,11 @@ Webpack, Babel, Axios and Storybook. It was also tested using Jest and Cypress.
 
 ## Final Product Screenshots
 
-!["Screenshot of home page"]()  
+!["Screenshot"](https://github.com/AT1787/scheduler/blob/master/public/images/Screen%20Shot%202020-06-18%20at%208.44.25%20PM.png)  
 
-!["Screenshot of error"]()  
+!["Screenshot"](https://github.com/AT1787/scheduler/blob/master/public/images/Screen%20Shot%202020-06-18%20at%208.44.25%20PM.png?raw=true)  
 
-!["Screenshot of status"]()  
+!["Screenshot"](https://github.com/AT1787/scheduler/blob/master/public/images/statusScreenShot.png?raw=true)  
   
 
 ## Dependencies  
